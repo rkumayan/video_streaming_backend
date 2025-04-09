@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js"
+import uploadOnCloudinary  from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 const registerUser = asyncHandler(async (req, res) => {
     
@@ -20,7 +20,7 @@ const registerUser = asyncHandler(async (req, res) => {
     if( fullName === "" || userName === "" || email === "" || password === "") { // 2
         throw new ApiError(400 , "all fields are required");        
     }
-    const existedUser = User.findOne( { $or : [userName , email ] } );  // 3
+    const existedUser = await User.findOne( { $or : [ {userName} , {email} ] } );  // 3
     
     if( existedUser )   
         throw new ApiError(409 , "user already exists" );
@@ -29,12 +29,14 @@ const registerUser = asyncHandler(async (req, res) => {
     const coverLocalPath = req.files?.cover[0]?.path
 
     if( !avatarLocalPath)
-        throw new ApiError(400 , "avatar file is required")
+        throw new ApiError(400 , "e1: avatar file is required")
+    
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)    // 5
     const coverImage = await uploadOnCloudinary(coverLocalPath);
+    
     if( !avatar )
-        throw new ApiError( 400, "avatar file is required");
+        throw new ApiError( 400, "e2: avatar file is required");
 
     const user = await User.create({        //6
         fullName, 
