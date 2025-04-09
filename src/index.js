@@ -1,8 +1,7 @@
 // require('dotenv').config(); // Load environment variables from .env file    
 import 'dotenv/config';
 
-import express from 'express';
-const app = express();
+import { app } from './app.js';
 
 import connectDB from './db/index.js'; // Import the connectDB function from db/index.js
 
@@ -17,8 +16,6 @@ connectDB()
     })
 
 
-app.get('/', (req, res) => {    
-    res.send('Hello World!');
-});
+
 
 
